@@ -1,11 +1,14 @@
+import groovy.json.JsonBuilder
+import groovy.json.JsonSlurper
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "1.7-SNAPSHOT" apply false
     id "com.matthewprenger.cursegradle" version "1.4.0" apply false
     id "org.cadixdev.licenser" version "0.6.1"
     id "com.modrinth.minotaur" version "2.+" apply false
 }
+
 
 architectury {
     minecraft = project.mc_version
@@ -57,11 +60,14 @@ allprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
-        options.release = 17
+        options.release = 21
     }
 
     java {
         withSourcesJar()
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
     }
 }
 
@@ -75,7 +81,7 @@ task curseforgeModrinth(dependsOn: [
 if (project.hasProperty("version_lib_dir")) {
     task updateVersionLib(group: "upload") {
         def versionFile = file("${version_lib_dir}/youtube_chat_version.json")
-        def jsonBuilder = new groovy.json.JsonBuilder(new groovy.json.JsonSlurper().parseText(versionFile.text))
+        def jsonBuilder = new JsonBuilder(new JsonSlurper().parseText(versionFile.text))
         def jsonElement = jsonBuilder.content
         def formattedList = []
 

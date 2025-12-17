@@ -1,0 +1,16 @@
+println "Applying TrustAll SSL Socket Factory"
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+
+class TrustAll implements X509TrustManager {
+    void checkClientTrusted(X509Certificate[] chain, String authType) {}
+    void checkServerTrusted(X509Certificate[] chain, String authType) {}
+    X509Certificate[] getAcceptedIssuers() { return null }
+}
+
+SSLContext sc = SSLContext.getInstance("SSL")
+sc.init(null, [new TrustAll()] as TrustManager[], new SecureRandom())
+javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory())
